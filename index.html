@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pentatonic Playgorund</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rakkas&family=ZCOOL+QingKe+HuangYou&display=swap">
+    <style>
+        body {
+            font-family: 'Rakkas', serif;
+            text-align: center;
+            background-color: #cbc6b2;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            color: #56453d;
+            font-weight: bold;
+        }
+        p {
+            color: #7e7368;
+            font-size: 18px;
+        }
+        button {
+            background-color: #8e836e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 5px;
+            font-size: 16px;
+            font-weight: 300;
+            font-family: 'Rakkas', serif;
+        }
+        button:hover {
+            background-color: #736652;
+        }
+        #practiceResult {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #56453d;
+            font-weight: bold;
+        }
+        .scale {
+            color: #a85336;
+        }
+        .shape {
+            color: #197278;
+        }
+        .bpm {
+            color: #1b512d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pentatonic Playground</h1>
+    <p>Click the button below to randomly pick a pentatonic scale, a shape, and a BPM to practice.</p>
+    <button id="pickButton">Pick Practice</button>
+    <button id="lockUnlockScaleButton">Lock Scale</button>
+    <button id="lockUnlockShapeButton">Lock Shape</button>
+    <button id="lockUnlockBpmButton">Lock BPM</button>
+    <button id="toggleSharpsFlatsButton">Exclude Sharps & Flats</button>
+    <p id="practiceResult"></p>
+
+    <script>
+        (function() {
+            const sharpFlatPentatonicScales = ["A# minor pentatonic", "Bb minor pentatonic","C# minor pentatonic", "Db minor pentatonic","D# minor pentatonic", "Eb minor pentatonic","F# minor pentatonic", "Gb minor pentatonic","G# minor pentatonic", "Ab minor pentatonic","A# major pentatonic", "Bb major pentatonic","C# major pentatonic", "Db major pentatonic","D# major pentatonic", "Eb major pentatonic","F# major pentatonic", "Gb major pentatonic","G# major pentatonic", "Ab major pentatonic"];
+            const naturalPentatonicScales = ["A minor pentatonic", "B minor pentatonic","C minor pentatonic", "D minor pentatonic","E minor pentatonic", "F minor pentatonic","G minor pentatonic", "A major pentatonic","B major pentatonic", "C major pentatonic","D major pentatonic", "E major pentatonic","F major pentatonic", "G major pentatonic"];
+            let includeSharpsFlats = true;
+            let pentatonicScales = [...naturalPentatonicScales, ...sharpFlatPentatonicScales];
+            const shapes = ["1st shape", "2nd shape", "3rd shape", "4th shape", "5th shape"];
+            const bpms = ["30 BPM", "60 BPM", "80 BPM", "100 BPM", "120 BPM", "140 BPM", "160 BPM", "180 BPM", "200 BPM"];
+            let isScaleLocked = false;
+            let isShapeLocked = false;
+            let isBpmLocked = false;
+            let previousShape = null;
+
+            function getRandomElement(array) {
+                return array[Math.floor(Math.random() * array.length)];
+            }
+
+            function getRandomShape() {
+                let randomShape = getRandomElement(shapes);
+                while (randomShape === previousShape) {
+                    randomShape = getRandomElement(shapes);
+                }
+                previousShape = randomShape;
+                return randomShape;
+            }
+
+            document.getElementById("pickButton").addEventListener("click", function() {
+                const randomScale = isScaleLocked ? document.getElementById("practiceResult").dataset.scale : getRandomElement(pentatonicScales);
+                const randomShape = isShapeLocked ? document.getElementById("practiceResult").dataset.shape : getRandomShape();
+                const randomBpm = isBpmLocked ? document.getElementById("practiceResult").dataset.bpm : getRandomElement(bpms);
+                const practiceResult = `Practice the <span class="scale">${randomScale}</span>, <span class="shape">${randomShape}</span> at <span class="bpm">${randomBpm}</span>.`;
+                document.getElementById("practiceResult").innerHTML = practiceResult;
+                document.getElementById("practiceResult").dataset.scale = randomScale;
+                document.getElementById("practiceResult").dataset.shape = randomShape;
+                document.getElementById("practiceResult").dataset.bpm = randomBpm;
+            });
+
+            document.getElementById("lockUnlockScaleButton").addEventListener("click", function() {
+                isScaleLocked = !isScaleLocked;
+                document.getElementById("lockUnlockScaleButton").textContent = isScaleLocked ? "Unlock Scale" : "Lock Scale";
+            });
+
+            document.getElementById("lockUnlockShapeButton").addEventListener("click", function() {
+                isShapeLocked = !isShapeLocked;
+                document.getElementById("lockUnlockShapeButton").textContent = isShapeLocked ? "Unlock Shape" : "Lock Shape";
+            });
+
+            document.getElementById("lockUnlockBpmButton").addEventListener("click", function() {
+                isBpmLocked = !isBpmLocked;
+                document.getElementById("lockUnlockBpmButton").textContent = isBpmLocked ? "Unlock BPM" : "Lock BPM";
+            });
+
+            document.getElementById("toggleSharpsFlatsButton").addEventListener("click", function() {
+                includeSharpsFlats = !includeSharpsFlats;
+                pentatonicScales = includeSharpsFlats ? [...naturalPentatonicScales, ...sharpFlatPentatonicScales] : [...naturalPentatonicScales];
+                document.getElementById("toggleSharpsFlatsButton").textContent = includeSharpsFlats ? "Exclude Sharps & Flats" : "Include Sharps & Flats";
+            });
+        })();
+    </script>
+</body>
+</html>
